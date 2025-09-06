@@ -1,8 +1,9 @@
 import pygame
 pygame.init()
 screen=pygame.display.set_mode((500,500))
-pygame.display.set_caption("I mean, nothing's forcing you so, yeah")
+pygame.display.set_caption("I mean, something's forcing you so, yeah")
 screen.fill((250,250,250))
+score=0
 
 image={
  "candycrush" : pygame.image.load("candy.jpg"),
@@ -16,11 +17,27 @@ imagerects={
     "subway" : pygame.Rect(230,10,100,100),
     "temple" : pygame.Rect(340,10,100,100)}
 
+
+
+textrects={
+  "candycrush" : pygame.Rect(10,400,100,100),
+    "temple" : pygame.Rect(120,450,100,100),
+    "ludo" : pygame.Rect(230,400,100,100),
+    "subway surfers" : pygame.Rect(340,450,100,100)}
+
+scorematch={
+    "candycrush":"candycrush",
+    "ludo":"ludo",
+    "subway":"subway",
+    "temple":"temple"}
+
+for i,j in imagerects.items():
+    screen.blit(image[i],(j.x,j.y))
+
 font=pygame.font.SysFont("Rockwell",30)
-candycrushtext=font.render("Candy Crush",True,(0,0,0))
-ludotext=font.render("Ludo",True,(0,0,0))
-subwaytext=font.render("Subway Surfers",True,(0,0,0))
-templetext=font.render("Temple Run",True,(0,0,0))
+for i,j in textrects.items():
+    text=font.render(i,True,(0,0,0))
+    screen.blit(text,(j.x,j.y))
 
 
 while True:
@@ -31,12 +48,36 @@ while True:
 
         if i.type==pygame.MOUSEBUTTONDOWN:
             pos=pygame.mouse.get_pos()
-            pygame.draw.circle(screen,(50,180,200),pos,10,0)
         
         elif i.type==pygame.MOUSEBUTTONUP:
             pos1=pygame.mouse.get_pos()
-            pygame.draw.circle(screen,(50,180,200),pos1,10,0)
-            pygame.draw.line(screen,(50,180,200),pos,pos1,5)
+
+            startlabel=None
+            endlabel=None
+            for i,j in imagerects.items():
+                if j.collidepoint(pos):
+                    startlabel=i
+
+            for i,j in textrects.items():
+                if j.collidepoint(pos1):
+                    endlabel=i
+            
+            if startlabel and endlabel:
+                pygame.draw.line(screen,(0,30,50),pos,pos1,10)
+                pygame.display.update()
+
+                if scorematch[startlabel]==endlabel:
+                    score+=1
+                    print("You got it right!")
+                    if score==4:
+                        print("You got them all!!")
+                else:
+                    print("Try again!")
+                    
+            
+                    
+                
+
 
 
     pygame.display.update()    
